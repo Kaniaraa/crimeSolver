@@ -1,7 +1,7 @@
-class NodeLoc {
+class Tunjuk {
     String clue;
-    NodeLoc next;
-    public NodeLoc(String clue){
+    Tunjuk next;
+    public Tunjuk(String clue){
         this.clue = clue;
         this.next = null;
     }

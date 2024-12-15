@@ -1,11 +1,11 @@
-class Lokasi {
-    NodeLoc head;
+class Petunjuk {
+    Tunjuk head;
     public void add(String clue){
-        NodeLoc newNodeLoc = new NodeLoc(clue);
+        Tunjuk newNodeLoc = new Tunjuk(clue);
         if (head == null) {
             head = newNodeLoc;
         }else{
-            NodeLoc current = head;
+            Tunjuk current = head;
             while (current.next != null) {
                 current = current.next;
             }
@@ -16,7 +16,7 @@ class Lokasi {
         if(head == null){
             System.out.println("Takdee clue :P");
         }else{
-            NodeLoc current = head;
+            Tunjuk current = head;
             while (current != null) {
                 System.out.println(current.clue);
                 current = current.next;

@@ -1,10 +1,10 @@
 class Node {
     String name;
-    Lokasi petunjuk;
+    Petunjuk petunjuk;
     Node next;
     public Node(String name){
         this.name = name;
-        this.petunjuk = new Lokasi();
+        this.petunjuk = new Petunjuk();
         this.next = null;
     }
     public void addClue(String clue){
