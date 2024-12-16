@@ -1,8 +1,8 @@
 class NodeStack {
-    String lokasinya;
+    String lokasi;   // Lokasi yang dikunjungi
     NodeStack next;
-    public NodeStack(String lokasinya){
-        this.lokasinya = lokasinya;
+    public NodeStack(String lokasi) {
+        this.lokasi = lokasi;
         this.next = null;
     }
 }

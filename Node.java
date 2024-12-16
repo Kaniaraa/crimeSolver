@@ -1,18 +1,17 @@
 class Node {
-    String name;
+    String name;       // Nama lokasi
     Petunjuk petunjuk;
     Node next;
-    public Node(String name){
+    public Node(String name) {
         this.name = name;
         this.petunjuk = new Petunjuk();
         this.next = null;
     }
-    public void addClue(String clue){
-        petunjuk.add(clue);
+    public void addClue(String clue) {
+        petunjuk.add(clue);  // nambah petunjuk ke lokasi
     }
-    public void displayClue(){
-        System.out.println("Petunjuk yang ada di lokasi");
-        System.out.println("> " + name );
-        petunjuk.display();
+    public void displayClue() {
+        System.out.println("Petunjuk di lokasi " + name + ":");
+        petunjuk.display();  // petunjuk di lokasi
     }
 }
