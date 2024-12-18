@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 class Petunjuk {
     Tunjuk head;
     public void add(String clue) {
@@ -13,14 +17,25 @@ class Petunjuk {
         }
     }
     public void display() {
-        if (head == null) {
-            System.out.println("Tidak ada petunjuk di lokasi ini.");
-        } else {
-            Tunjuk current = head;
-            while (current != null) {
-                System.out.println(current.clue);
-                current = current.next;
-            }
+    if (head == null) {
+        System.out.println("Tidak ada petunjuk di lokasi ini.");
+    } else {
+        // Mengambil daftar petunjuk ke dalam array
+        List<String> clues = new ArrayList<>();
+        Tunjuk current = head;
+        while (current != null) {
+            clues.add(current.clue);
+            current = current.next;
+        }
+
+        // Sorting petunjuk
+        Collections.sort(clues);
+
+        // Menampilkan petunjuk yang sudah diurutkan
+        for (String clue : clues) {
+            System.out.println(clue);
         }
     }
+}
+
 }
