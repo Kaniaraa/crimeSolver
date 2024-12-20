@@ -14,13 +14,16 @@ class AyoMain {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
         while (running) {
-            System.out.println("\n=== Crime Solver Menu ===");
-            System.out.println("1. Tambahkan Lokasi");
-            System.out.println("2. Kunjungi Lokasi");
-            System.out.println("3. Lihat Jejak Perjalanan");
-            System.out.println("4. Lihat Semua Lokasi");
-            System.out.println("5. Selesaikan Teka-Teki");
-            System.out.println("6. Keluar");
+            System.out.println("\n╔══════════════════════════╗");
+            System.out.println("║    Crime Solver Menu     ║");
+            System.out.println("╠══════════════════════════╣");
+            System.out.println("║ 1. Tambahkan Lokasi      ║");
+            System.out.println("║ 2. Kunjungi Lokasi       ║");
+            System.out.println("║ 3. Lihat Jejak Perjalanan║");
+            System.out.println("║ 4. Lihat Semua Lokasi    ║");
+            System.out.println("║ 5. Selesaikan Teka-Teki  ║");
+            System.out.println("║ 6. Keluar                ║");
+            System.out.println("╚══════════════════════════╝");
             System.out.print("Pilihan Anda: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
