@@ -5,9 +5,8 @@ class CrimeSolverLogin {
     private Account head;
 
     public CrimeSolverLogin() {
-        queueLogin = new QueueLogin(10);  
+        queueLogin = new QueueLogin();  
     }
-
     static class Account {
         String username;
         String password;
@@ -19,7 +18,6 @@ class CrimeSolverLogin {
             this.next = null;
         }
     }
-
     // Sign-up akun baru
     public void signUp(String username, String password) {
         if (findAccount(username) != null) {
@@ -38,20 +36,16 @@ class CrimeSolverLogin {
         }
         System.out.println("Akun berhasil dibuat! Silakan login.");
     }
-
-    
     public boolean login(String username, String password) {
         Account account = findAccount(username);
         if (account != null && account.password.equals(password)) {
             System.out.println("Login berhasil! Selamat datang, " + username + "!");
-            queueLogin.enqueue(username);  
+            queueLogin.enqueue(username);  // Memasukkan ke dalam antrian login hanya jika login berhasil
             return true;
         }
         System.out.println("Login gagal. Username atau password salah.");
         return false;
     }
-
-    
     private Account findAccount(String username) {
         Account current = head;
         while (current != null) {
@@ -62,8 +56,6 @@ class CrimeSolverLogin {
         }
         return null;
     }
-
-    
     public void mainMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -81,6 +73,7 @@ class CrimeSolverLogin {
                 System.out.println("Input tidak valid. Silakan pilih angka antara 1 dan 4.");
                 continue;
             }
+            
             switch (choice) {
                 case 1:
                     System.out.print("Username: ");
@@ -95,15 +88,17 @@ class CrimeSolverLogin {
                     System.out.print("Password: ");
                     password = scanner.nextLine();
                     if (login(username, password)) {
-                        new AyoMain().startGame();  
+                        // Pastikan login berhasil baru masuk ke game
+                        AyoMain gameSystem = new AyoMain();
+                        gameSystem.startGame();  
                     }
                     break;
                 case 3:
-                    queueLogin.displayLoginAccounts();  
+                    queueLogin.displayLoginAccounts();
                     break;
                 case 4:
                     System.out.println("Terima kasih!");
-                    scanner.close();  
+                    scanner.close();
                     return;
                 default:
                     System.out.println("Pilihan tidak valid.");
