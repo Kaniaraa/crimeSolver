@@ -1,10 +1,10 @@
 import java.util.Scanner;
 class Teka {
-    String clue;   // Clue atau petunjuk yang diberikan
-    Teka opsi1;  // Pilihan pertama
-    Teka opsi2;  // Pilihan kedua
-    String opsi1Text;  // Teks untuk pilihan pertama
-    String opsi2Text;  // Teks untuk pilihan kedua
+    String clue;  
+    Teka opsi1; 
+    Teka opsi2; 
+    String opsi1Text;
+    String opsi2Text; 
 
     public Teka(String clue, String opsi1Text, String opsi2Text) {
         this.clue = clue;
@@ -15,9 +15,8 @@ class Teka {
     }
 }
 class TekaTeki {
-    private final Teka root;  // Root dari teka-teki
+    private final Teka root; 
     public TekaTeki() {
-        // Menyusun teka-teki dengan pilihan
         root = new Teka(
             "Kamu menemukan sidik jari di tempat kejadian.",
             "Periksa sidik jarinya lebih lanjut.",
@@ -33,7 +32,6 @@ class TekaTeki {
             "Periksa wajah orang tersebut.",
             "Cari petunjuk lain di lokasi."
         );
-        // Pilihan lanjutan untuk opsi1
         root.opsi1.opsi1 = new Teka(
             "Wajah orang tersebut cocok dengan deskripsi saksi.",
             "Tanya orang tersebut.",
@@ -44,12 +42,12 @@ class TekaTeki {
             "Periksa tempat lain.",
             "Lanjutkan penyelidikan."
         );
-        root.opsi2.opsi1 = new Teka(  // Ini sebelumnya tertimpa oleh root.opsi1
+        root.opsi2.opsi1 = new Teka( 
             "Wajah orang tersebut cocok dengan deskripsi saksi.",
             "Tanya orang tersebut.",
             "Periksa alibi orang tersebut."
         );
-        root.opsi2.opsi2 = new Teka(  // Ini sebelumnya tertimpa oleh root.opsi1
+        root.opsi2.opsi2 = new Teka( 
             "Tidak ada petunjuk lebih lanjut di lokasi.",
             "Periksa tempat lain.",
             "Lanjutkan penyelidikan."
@@ -57,7 +55,7 @@ class TekaTeki {
     }
     public void solve() {
         Scanner scanner = new Scanner(System.in);
-        Teka current = root;  // Mulai dari pertanyaan pertama
+        Teka current = root; 
 
         while (current.opsi1 != null || current.opsi2 != null) {
             System.out.println(current.clue);

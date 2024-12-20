@@ -18,7 +18,6 @@ class CrimeSolverLogin {
             this.next = null;
         }
     }
-    // Sign-up akun baru
     public void signUp(String username, String password) {
         if (findAccount(username) != null) {
             System.out.println("Username sudah digunakan. Silakan gunakan username lain.");
@@ -40,7 +39,7 @@ class CrimeSolverLogin {
         Account account = findAccount(username);
         if (account != null && account.password.equals(password)) {
             System.out.println("Login berhasil! Selamat datang, " + username + "!");
-            queueLogin.enqueue(username);  // Memasukkan ke dalam antrian login hanya jika login berhasil
+            queueLogin.enqueue(username);  
             return true;
         }
         System.out.println("Login gagal. Username atau password salah.");
@@ -88,7 +87,6 @@ class CrimeSolverLogin {
                     System.out.print("Password: ");
                     password = scanner.nextLine();
                     if (login(username, password)) {
-                        // Pastikan login berhasil baru masuk ke game
                         AyoMain gameSystem = new AyoMain();
                         gameSystem.startGame();  
                     }

@@ -4,11 +4,12 @@ class AyoMain {
     private final Graph lokasiGraph;
     private final Stack jejakPerjalanan;
     private final TekaTeki tekaTeki;
-    
+    private String tersangkaTerpilih; 
     public AyoMain() {
         lokasiGraph = new Graph();
         jejakPerjalanan = new Stack();
         tekaTeki = new TekaTeki();
+        tersangkaTerpilih = null; 
     }
     public void startGame() {
         initializeGame();
@@ -23,16 +24,16 @@ class AyoMain {
             System.out.println("║ 2. Lihat Jejak Perjalanan║");
             System.out.println("║ 3. Lihat Semua Lokasi    ║");
             System.out.println("║ 4. Selesaikan Teka-Teki  ║");
-            System.out.println("║ 5. Keluar                ║");
+            System.out.println("║ 5. Selesaikan Kasus      ║");  
+            System.out.println("║ 6. Keluar                ║");
             System.out.println("╚══════════════════════════╝");
             System.out.print("Pilihan Anda: ");
-            
+
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Clean up newline character
-            
+            scanner.nextLine(); 
+
             switch (choice) {
                 case 1:
-                    // Menampilkan daftar lokasi yang tersedia
                     System.out.println("Pilih lokasi yang ingin dikunjungi:");
                     lokasiGraph.displayLoc();
                     System.out.print("Masukkan nama lokasi: ");
@@ -41,22 +42,26 @@ class AyoMain {
                     if (lokasi != null) {
                         jejakPerjalanan.push(visitLocation);
                         System.out.println("Kamu telah mengunjungi lokasi: " + visitLocation);
-                        lokasi.displayClue();  // Menampilkan petunjuk di lokasi yang dikunjungi
-                        lokasi.displayConnections();  // Menampilkan lokasi terhubung
+                        lokasi.displayClue();  
+                        lokasi.displayConnections(); 
+                        mulaiPenyelidikan(lokasi); 
                     } else {
                         System.out.println("Lokasi tidak ditemukan!");
                     }
                     break;
                 case 2:
-                    jejakPerjalanan.display();  // Menampilkan jejak perjalanan pemain
+                    jejakPerjalanan.display(); 
                     break;
                 case 3:
-                    lokasiGraph.displayLoc();  // Menampilkan semua lokasi yang ada
+                    lokasiGraph.displayLoc(); 
                     break;
                 case 4:
-                    tekaTeki.solve();  // Menyelesaikan teka-teki
+                    tekaTeki.solve();  
                     break;
                 case 5:
+                    solveCase(scanner); 
+                    break;
+                case 6:
                     running = false;
                     System.out.println("Terima kasih telah bermain Crime Solver!");
                     break;
@@ -65,8 +70,36 @@ class AyoMain {
             }
         }
     }
+    private void mulaiPenyelidikan(Node lokasi) {
+        Scanner scanner = new Scanner(System.in);
+        boolean selesai = false;
+    
+        while (!selesai) {
+            System.out.println("\n=== Penyelidikan di " + lokasi.name + " ===");
+            System.out.println("1. Periksa petunjuk lebih detail");
+            System.out.println("2. Tanya saksi (jika ada)");
+            System.out.println("3. Kembali ke Menu Utama");
+            System.out.print("Pilihan Anda: ");
+    
+            int pilihan = scanner.nextInt();
+            scanner.nextLine();
+            switch (pilihan) {
+                case 1:
+                    System.out.println("Memeriksa petunjuk lebih detail...");
+                    lokasi.displayClue();  
+                    break;
+                case 2:
+                    System.out.println("Tidak ada saksi yang dapat diwawancarai di lokasi ini.");
+                    break;
+                case 3:
+                    selesai = true;  
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
+    }
     private void initializeGame() {
-        // Menambahkan lokasi-lokasi awal ke game
         lokasiGraph.addLokasi("TKP");
         lokasiGraph.addLokasi("Kamar Tersangka");
         lokasiGraph.addLokasi("Dapur");
@@ -74,7 +107,6 @@ class AyoMain {
         lokasiGraph.addLokasi("Garasi");
         lokasiGraph.addLokasi("Gudang");
     
-        // Menambahkan petunjuk untuk lokasi-lokasi tersebut
         Node tKPLokasi = lokasiGraph.cariLokasi("TKP");
         if (tKPLokasi != null) {
             tKPLokasi.addClue("Sidik jari ditemukan di meja. Ada noda darah di lantai.");
@@ -99,14 +131,14 @@ class AyoMain {
         if (gudang != null) {
             gudang.addClue("Ada jejak kaki basah yang mengarah ke gudang. Ditemukan barang bukti di sana.");
         }
-        // Menghubungkan lokasi-lokasi yang relevan
+        
         lokasiGraph.connectLokasi("TKP", "Kamar Tersangka");
         lokasiGraph.connectLokasi("TKP", "Dapur");
         lokasiGraph.connectLokasi("TKP", "Taman");
         lokasiGraph.connectLokasi("Kamar Tersangka", "Garasi");
         lokasiGraph.connectLokasi("Taman", "Gudang");
         lokasiGraph.connectLokasi("Dapur", "Gudang");
-        // Menambahkan lokasi tambahan yang lebih dinamis
+        
         lokasiGraph.addLokasi("Pusat Polisi");
         Node pusatPolisi = lokasiGraph.cariLokasi("Pusat Polisi");
         if (pusatPolisi != null) {
@@ -120,12 +152,45 @@ class AyoMain {
         if (taman != null) {
             taman.addClue("Surat yang ditemukan di taman mencurigakan. Itu adalah ancaman yang ditulis oleh tersangka.");
         }
-        // Menambahkan bukti yang lebih spesifik
         if (tKPLokasi != null) {
             tKPLokasi.addClue("Ditemukan bukti darah yang mengarah ke kamar tersangka.");
         }
         if (garasi != null) {
             garasi.addClue("Ada bekas rem di tanah yang menunjukkan mobil tersangka berusaha melarikan diri.");
         }
+    }
+    private void solveCase(Scanner scanner) {
+        System.out.println("\n=== Menyelesaikan Kasus ===");
+        if (tersangkaTerpilih == null) {
+            System.out.println("Tersangka belum dipilih. Silakan kunjungi lebih banyak lokasi untuk mendapatkan petunjuk.");
+            return;
+        }
+        System.out.println("Berdasarkan petunjuk yang ditemukan, siapa yang menurut Anda adalah tersangka?");
+        System.out.println("Tersangka yang tersedia:");
+        System.out.println("1. Tersangka A");
+        System.out.println("2. Tersangka B");
+        System.out.println("3. Tersangka C");
+
+        System.out.print("Pilih nomor tersangka: ");
+        int pilihan = scanner.nextInt();
+        scanner.nextLine(); 
+
+        String hasil = "";
+        switch (pilihan) {
+            case 1:
+                hasil = "Tersangka A adalah yang bertanggung jawab!";
+                break;
+            case 2:
+                hasil = "Tersangka B adalah yang bertanggung jawab!";
+                break;
+            case 3:
+                hasil = "Tersangka C adalah yang bertanggung jawab!";
+                break;
+            default:
+                System.out.println("Pilihan tidak valid!");
+                return;
+        }
+        System.out.println(hasil);
+        System.out.println("Kasus berhasil diselesaikan. Terima kasih telah bermain!");
     }
 }

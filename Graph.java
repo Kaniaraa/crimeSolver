@@ -2,7 +2,7 @@ class Node {
     String name;
     Petunjuk petunjuk;
     Node next;
-    Node connections;  // Menyimpan lokasi-lokasi yang terhubung
+    Node connections; 
 
     public Node(String name) {
         this.name = name;
@@ -10,22 +10,19 @@ class Node {
         this.next = null;
         this.connections = null;
     }
-    // Menambahkan petunjuk ke lokasi
     public void addClue(String clue) {
         this.petunjuk.addClue(clue);
     }
-    // Menambahkan lokasi yang terhubung
     public void addConnection(Node node) {
-        node.next = this.connections;
-        this.connections = node;
+        Node newConnection = new Node(node.name); 
+        newConnection.next = this.connections;    
+        this.connections = newConnection; 
     }
-    // Menampilkan petunjuk yang ada pada lokasi
     public void displayClue() {
         if (this.petunjuk != null) {
             System.out.println("Petunjuk di lokasi " + this.name + ": " + this.petunjuk.getClue());
         }
     }
-    // Menampilkan lokasi-lokasi yang terhubung dengan lokasi ini
     public void displayConnections() {
         if (this.connections == null) {
             System.out.println("Tidak ada lokasi yang terhubung.");
@@ -42,7 +39,6 @@ class Node {
 class Graph {
     private Node head;
 
-    // Menambahkan lokasi baru ke dalam graph
     public void addLokasi(String name) {
         Node newNode = new Node(name);
         if (head == null) {
@@ -55,7 +51,6 @@ class Graph {
             current.next = newNode;
         }
     }
-    // Mencari lokasi berdasarkan nama
     public Node cariLokasi(String name) {
         Node current = head;
         while (current != null) {
@@ -66,7 +61,6 @@ class Graph {
         }
         return null;
     }
-    // Menampilkan semua lokasi yang ada dalam graph
     public void displayLoc() {
         if (head == null) {
             System.out.println("Belum ada lokasi yang ditambahkan.");
@@ -79,18 +73,16 @@ class Graph {
             current = current.next;
         }
     }
-    // Mengurutkan lokasi berdasarkan nama (bubble sort)
     public void sortLocations() {
         if (head == null || head.next == null) {
-            return; // Tidak perlu sorting jika hanya satu atau tidak ada lokasi
+            return; 
         }
         boolean swapped;
         do {
             swapped = false;
             Node current = head;
             while (current.next != null) {
-                if (current.name.compareTo(current.next.name) > 0) { // Membandingkan nama
-                    // Tukar lokasi
+                if (current.name.compareTo(current.next.name) > 0) { 
                     String temp = current.name;
                     current.name = current.next.name;
                     current.next.name = temp;
@@ -101,13 +93,12 @@ class Graph {
         } while (swapped);
         System.out.println("Lokasi berhasil diurutkan.");
     }
-    // Menghubungkan dua lokasi
     public void connectLokasi(String loc1, String loc2) {
         Node node1 = cariLokasi(loc1);
         Node node2 = cariLokasi(loc2);
         if (node1 != null && node2 != null) {
             node1.addConnection(node2);
-            node2.addConnection(node1); // Koneksi dua arah
+            node2.addConnection(node1);
         } 
     }
 }

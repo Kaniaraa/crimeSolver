@@ -1,6 +1,6 @@
 class NodeStack {
-    String lokasi;   // Lokasi yang dikunjungi
-    NodeStack next;  // Menghubungkan node satu dengan lainnya
+    String lokasi;  
+    NodeStack next; 
 
     public NodeStack(String lokasi) {
         this.lokasi = lokasi;
@@ -8,27 +8,39 @@ class NodeStack {
     }
 }
 class Stack {
-    private NodeStack top;  // Menggunakan NodeStack sebagai tipe untuk top
-
+    private NodeStack top;  // Titik atas stack
     public Stack() {
         this.top = null;
     }
-    // Menambahkan lokasi ke stack
-    public void push(String data) {
-        NodeStack newNode = new NodeStack(data);
-        newNode.next = top;  // Menyambungkan node baru ke node sebelumnya
-        top = newNode;  // Menetapkan node baru sebagai top
+    public void push(String lokasi) {
+        NodeStack newNode = new NodeStack(lokasi);  // node baru
+        newNode.next = top;  // tamabah ke stack
+        top = newNode;
+        System.out.println("Anda telah mengunjungi lokasi: " + lokasi);
     }
-    // Menampilkan semua lokasi yang ada di stack
-    public void display() {
-        if (top == null) {
-            System.out.println("Stack kosong, tidak ada lokasi yang dapat ditampilkan.");
-            return;
+    public String pop() {
+        if (isEmpty()) {
+            System.out.println("Stack kosong! Tidak ada lokasi untuk dihapus.");
+            return null;
         }
-        NodeStack current = top;
-        while (current != null) {
-            System.out.println(current.lokasi);
-            current = current.next;
+        String lokasiDihapus = top.lokasi;  // ambil lokasi dari stack
+        top = top.next;  // Pindah ke node berikutnya
+        System.out.println("Kembali dari lokasi: " + lokasiDihapus);
+        return lokasiDihapus;
+    }
+    public boolean isEmpty() {
+        return top == null;  // cek apakah stack kosong
+    }
+    public void display() {
+        if (isEmpty()) {
+            System.out.println("Belum ada lokasi yang dikunjungi.");
+        } else {
+            System.out.println("Jejak perjalanan:");
+            NodeStack current = top;
+            while (current != null) {
+                System.out.println("- " + current.lokasi);  // Menampilkan jejak perjalanan
+                current = current.next;
+            }
         }
     }
 }
