@@ -24,6 +24,7 @@ class AyoMain {
             System.out.println("║ 5. Selesaikan Teka-Teki  ║");
             System.out.println("║ 6. Keluar                ║");
             System.out.println("╚══════════════════════════╝");
+            
             System.out.print("Pilihan Anda: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
