@@ -8,13 +8,13 @@ class NodeStack {
     }
 }
 class Stack {
-    private NodeStack top;  // Titik atas stack
+    private NodeStack top; 
     public Stack() {
         this.top = null;
     }
     public void push(String lokasi) {
-        NodeStack newNode = new NodeStack(lokasi);  // node baru
-        newNode.next = top;  // tamabah ke stack
+        NodeStack newNode = new NodeStack(lokasi); 
+        newNode.next = top;  
         top = newNode;
         System.out.println("Anda telah mengunjungi lokasi: " + lokasi);
     }
@@ -23,13 +23,13 @@ class Stack {
             System.out.println("Stack kosong! Tidak ada lokasi untuk dihapus.");
             return null;
         }
-        String lokasiDihapus = top.lokasi;  // ambil lokasi dari stack
-        top = top.next;  // Pindah ke node berikutnya
+        String lokasiDihapus = top.lokasi; 
+        top = top.next; 
         System.out.println("Kembali dari lokasi: " + lokasiDihapus);
         return lokasiDihapus;
     }
     public boolean isEmpty() {
-        return top == null;  // cek apakah stack kosong
+        return top == null; 
     }
     public void display() {
         if (isEmpty()) {
@@ -38,7 +38,7 @@ class Stack {
             System.out.println("Jejak perjalanan:");
             NodeStack current = top;
             while (current != null) {
-                System.out.println("- " + current.lokasi);  // Menampilkan jejak perjalanan
+                System.out.println("- " + current.lokasi); 
                 current = current.next;
             }
         }

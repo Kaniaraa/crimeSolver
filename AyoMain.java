@@ -1,15 +1,21 @@
 import java.util.Scanner;
 
 class AyoMain {
+    private int skor;
     private final Graph lokasiGraph;
     private final Stack jejakPerjalanan;
     private final TekaTeki tekaTeki;
-    private String tersangkaTerpilih; 
+    private static final int skor_max = 100;
+    private static final int penalti = 30;
+    private static final int skor_awal = 0;
+    private String tersangkaTerpilih;
+
     public AyoMain() {
         lokasiGraph = new Graph();
         jejakPerjalanan = new Stack();
         tekaTeki = new TekaTeki();
         tersangkaTerpilih = null; 
+        skor = skor_max;
     }
     public void startGame() {
         initializeGame();
@@ -17,20 +23,22 @@ class AyoMain {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n╔══════════════════════════╗");
+            System.out.println("\nSkor : " + skor );
+            System.out.println("╔══════════════════════════╗");
             System.out.println("║    Crime Solver Menu     ║");
             System.out.println("╠══════════════════════════╣");
             System.out.println("║ 1. Kunjungi Lokasi       ║");
             System.out.println("║ 2. Lihat Jejak Perjalanan║");
             System.out.println("║ 3. Lihat Semua Lokasi    ║");
             System.out.println("║ 4. Selesaikan Teka-Teki  ║");
-            System.out.println("║ 5. Selesaikan Kasus      ║");  
-            System.out.println("║ 6. Keluar                ║");
+            System.out.println("║ 5. Pilih Tersangka       ║");
+            System.out.println("║ 6. Selesaikan Kasus      ║");
+            System.out.println("║ 7. Keluar                ║");
             System.out.println("╚══════════════════════════╝");
             System.out.print("Pilihan Anda: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -42,11 +50,15 @@ class AyoMain {
                     if (lokasi != null) {
                         jejakPerjalanan.push(visitLocation);
                         System.out.println("Kamu telah mengunjungi lokasi: " + visitLocation);
-                        lokasi.displayClue();  
+                        lokasi.displayClue();
                         lokasi.displayConnections(); 
                         mulaiPenyelidikan(lokasi); 
                     } else {
                         System.out.println("Lokasi tidak ditemukan!");
+                        skor -= penalti;
+                        if(gameOver()){
+                            return;
+                        }
                     }
                     break;
                 case 2:
@@ -56,14 +68,20 @@ class AyoMain {
                     lokasiGraph.displayLoc(); 
                     break;
                 case 4:
-                    tekaTeki.solve();  
+                    tekaTeki.solve(); 
                     break;
                 case 5:
-                    solveCase(scanner); 
+                    pilihTersangka(scanner);
                     break;
                 case 6:
+                    solveCase(scanner);
+                    if(skor <= skor_awal){
+                        running = false;
+                    }    
+                break;
+                case 7:
                     running = false;
-                    System.out.println("Terima kasih telah bermain Crime Solver!");
+                    System.out.println("Terima kasih sudah bermain!");
                     break;
                 default:
                     System.out.println("Pilihan tidak valid. Coba lagi.");
@@ -73,30 +91,51 @@ class AyoMain {
     private void mulaiPenyelidikan(Node lokasi) {
         Scanner scanner = new Scanner(System.in);
         boolean selesai = false;
+        boolean petunjukSudahDiperiksa = false;
     
         while (!selesai) {
             System.out.println("\n=== Penyelidikan di " + lokasi.name + " ===");
             System.out.println("1. Periksa petunjuk lebih detail");
-            System.out.println("2. Tanya saksi (jika ada)");
-            System.out.println("3. Kembali ke Menu Utama");
+            System.out.println("2. Kembali ke Menu Utama");
+            //System.out.println("3. Kembali ke Menu Utama");
             System.out.print("Pilihan Anda: ");
     
             int pilihan = scanner.nextInt();
             scanner.nextLine();
             switch (pilihan) {
                 case 1:
-                    System.out.println("Memeriksa petunjuk lebih detail...");
-                    lokasi.displayClue();  
+                    if (petunjukSudahDiperiksa) {
+                        System.out.println("Petunjuk tambahan ditemukan!");
+                        tampilkanPetunjukTambahan(lokasi);
+                    } else {
+                        System.out.println("Memeriksa petunjuk lebih detail...");
+                        lokasi.displayClue();
+                        petunjukSudahDiperiksa = true; 
+                    }
                     break;
                 case 2:
-                    System.out.println("Tidak ada saksi yang dapat diwawancarai di lokasi ini.");
-                    break;
-                case 3:
-                    selesai = true;  
+                    selesai = true;
                     break;
                 default:
                     System.out.println("Pilihan tidak valid.");
             }
+        }
+    }
+    private void tampilkanPetunjukTambahan(Node lokasi) {
+        System.out.println("Petunjuk baru yang ditemukan: ");
+        
+        if (lokasi.name.equals("TKP")) {
+            System.out.println("Tersangka A memiliki bekas luka di tangannya, yang mungkin terkait dengan noda darah di TKP.");
+        } else if (lokasi.name.equals("Kamar Tersangka")) {
+            System.out.println("Ada surat yang tergeletak di meja di kamar tersangka. Mungkin ini terkait dengan motif kejahatan.");
+        } else if (lokasi.name.equals("Dapur")) {
+            System.out.println("Tersangka A tampaknya sering berada di dapur. Ada noda yang belum kering di lantai.");
+        } else if (lokasi.name.equals("Taman")) {
+            System.out.println("Beberapa tanaman tampaknya baru dipindahkan, bisa jadi untuk menyembunyikan jejak.");
+        } else if (lokasi.name.equals("Garasi")) {
+            System.out.println("Ada bekas oli tumpah di lantai garasi. Mungkin mobil tersangka A digunakan untuk melarikan diri.");
+        } else if (lokasi.name.equals("Gudang")) {
+            System.out.println("Di gudang, ada petunjuk tambahan berupa barang yang terbalik. Mungkin ada sesuatu yang disembunyikan.");
         }
     }
     private void initializeGame() {
@@ -106,14 +145,14 @@ class AyoMain {
         lokasiGraph.addLokasi("Taman");
         lokasiGraph.addLokasi("Garasi");
         lokasiGraph.addLokasi("Gudang");
-    
+
         Node tKPLokasi = lokasiGraph.cariLokasi("TKP");
         if (tKPLokasi != null) {
-            tKPLokasi.addClue("Sidik jari ditemukan di meja. Ada noda darah di lantai.");
+            tKPLokasi.addClue("Sidik jari ditemukan di meja. Ada noda darah di lantai. Pelaku terindikasi A.");
         }
         Node kamarTersangka = lokasiGraph.cariLokasi("Kamar Tersangka");
         if (kamarTersangka != null) {
-            kamarTersangka.addClue("Hasil DNA cocok dengan tersangka. Ada jejak sepatu di karpet.");
+            kamarTersangka.addClue("Hasil DNA cocok dengan tersangka A. Ada jejak sepatu di karpet.");
         }
         Node dapur = lokasiGraph.cariLokasi("Dapur");
         if (dapur != null) {
@@ -121,17 +160,16 @@ class AyoMain {
         }
         Node taman = lokasiGraph.cariLokasi("Taman");
         if (taman != null) {
-            taman.addClue("Tersangka sering terlihat di taman. Terdapat surat yang sobek.");
+            taman.addClue("Tersangka A sering terlihat di taman. Terdapat surat yang sobek.");
         }
         Node garasi = lokasiGraph.cariLokasi("Garasi");
         if (garasi != null) {
-            garasi.addClue("Ada bekas ban mobil di tanah. Mobil tersangka terparkir di sana.");
+            garasi.addClue("Ada bekas ban mobil di tanah. Mobil tersangka A terparkir di sana.");
         }
         Node gudang = lokasiGraph.cariLokasi("Gudang");
         if (gudang != null) {
             gudang.addClue("Ada jejak kaki basah yang mengarah ke gudang. Ditemukan barang bukti di sana.");
         }
-        
         lokasiGraph.connectLokasi("TKP", "Kamar Tersangka");
         lokasiGraph.connectLokasi("TKP", "Dapur");
         lokasiGraph.connectLokasi("TKP", "Taman");
@@ -139,58 +177,100 @@ class AyoMain {
         lokasiGraph.connectLokasi("Taman", "Gudang");
         lokasiGraph.connectLokasi("Dapur", "Gudang");
         
-        lokasiGraph.addLokasi("Pusat Polisi");
-        Node pusatPolisi = lokasiGraph.cariLokasi("Pusat Polisi");
-        if (pusatPolisi != null) {
-            pusatPolisi.addClue("Ada laporan saksi yang melihat mobil tersangka meninggalkan lokasi pada malam kejadian.");
-        }
-        lokasiGraph.connectLokasi("Gudang", "Pusat Polisi");
-        // Menambahkan petunjuk lebih lanjut berdasarkan hubungan antara lokasi
-        if (garasi != null) {
-            garasi.addClue("Mobil tersangka terlihat berada di garasi. Ditemukan kunci mobil di meja TKP.");
-        }
-        if (taman != null) {
-            taman.addClue("Surat yang ditemukan di taman mencurigakan. Itu adalah ancaman yang ditulis oleh tersangka.");
-        }
-        if (tKPLokasi != null) {
-            tKPLokasi.addClue("Ditemukan bukti darah yang mengarah ke kamar tersangka.");
-        }
-        if (garasi != null) {
-            garasi.addClue("Ada bekas rem di tanah yang menunjukkan mobil tersangka berusaha melarikan diri.");
-        }
     }
     private void solveCase(Scanner scanner) {
         System.out.println("\n=== Menyelesaikan Kasus ===");
         if (tersangkaTerpilih == null) {
             System.out.println("Tersangka belum dipilih. Silakan kunjungi lebih banyak lokasi untuk mendapatkan petunjuk.");
+            skor -= penalti;
+            if(gameOver()){
+                return;
+            }
             return;
         }
-        System.out.println("Berdasarkan petunjuk yang ditemukan, siapa yang menurut Anda adalah tersangka?");
-        System.out.println("Tersangka yang tersedia:");
+        System.out.println("Berdasarkan investigasi, sepertinya kamu mencurigai " + tersangkaTerpilih + " sebagai tersangka");
+
+        String alibi = "";
+        if (tersangkaTerpilih.equals("Tersangka A")) {
+            alibi = "Tersangka A mengaku berada di rumah pada malam kejadian dan tidak meninggalkan rumah sama sekali.";
+        } else if (tersangkaTerpilih.equals("Tersangka B")) {
+            alibi = "Tersangka B mengaku berada di luar kota saat kejadian, dan ada bukti bahwa dia benar-benar berada di tempat lain.";
+        } else if (tersangkaTerpilih.equals("Tersangka C")) {
+            alibi = "Tersangka C mengaku tidur di kamar tidurnya pada malam kejadian, yang dapat dibuktikan oleh keluarganya.";
+        }
+
+        System.out.println("Alibi yang diberikan oleh tersangka: " + alibi);
+        System.out.println("Apakah kamu yakin dia tersangkanya? (y/n): ");
+        String pilihan = scanner.nextLine().toLowerCase();
+        if(pilihan.equals("y")){
+            if(tersangkaTerpilih.equals("Tersangka A")){
+                System.out.println("Kamu benar pelakunya adalah tersangka A");
+                skor += 20;
+                System.out.println("\n==============================");
+                System.out.println("     CONGRATULATIONS!         ");
+                System.out.println("  You've solved the case!     ");
+                System.out.println("==============================");
+                System.out.println("   Well done, detective!      ");
+                System.out.println("       Your score: " + skor);
+                System.out.println("\nPress any key to exit...");
+                return;
+            }else{
+                System.out.println("Kamu menuduh orang yang tidak bersalah.");
+                skor -= penalti;
+                if(gameOver()){
+                    return;
+                }
+            }
+        }else{
+            System.out.println("Kamu menyerah pada penyilidikan ini");
+            skor -= penalti;
+        }
+        System.out.println("Kasus sudah berakhir, skor akhirmu: " + skor);
+        return;
+    }
+    private void pilihTersangka(Scanner scanner){
+        System.out.println("\nSilahkan pilih orang yang kamu curigai");
         System.out.println("1. Tersangka A");
         System.out.println("2. Tersangka B");
         System.out.println("3. Tersangka C");
 
         System.out.print("Pilih nomor tersangka: ");
         int pilihan = scanner.nextInt();
-        scanner.nextLine(); 
-
-        String hasil = "";
+        scanner.nextLine();
+        
         switch (pilihan) {
             case 1:
-                hasil = "Tersangka A adalah yang bertanggung jawab!";
+                tersangkaTerpilih = "Tersangka A";
                 break;
             case 2:
-                hasil = "Tersangka B adalah yang bertanggung jawab!";
+                tersangkaTerpilih = "Tersangka B";
                 break;
             case 3:
-                hasil = "Tersangka C adalah yang bertanggung jawab!";
+                tersangkaTerpilih = "Tersangka C";
                 break;
             default:
                 System.out.println("Pilihan tidak valid!");
                 return;
         }
-        System.out.println(hasil);
-        System.out.println("Kasus berhasil diselesaikan. Terima kasih telah bermain!");
+        System.out.println("Kamu sepertinya mencurigai " + tersangkaTerpilih + " sebagai pelaku.");
+
+        String alibi = "";
+        if (tersangkaTerpilih.equals("Tersangka A")) {
+            alibi = "Tersangka A mengaku berada di rumah pada malam kejadian dan tidak meninggalkan rumah sama sekali.";
+        } else if (tersangkaTerpilih.equals("Tersangka B")) {
+            alibi = "Tersangka B mengaku berada di luar kota saat kejadian, dan ada bukti bahwa dia benar-benar berada di tempat lain.";
+        } else if (tersangkaTerpilih.equals("Tersangka C")) {
+            alibi = "Tersangka C mengaku tidur di kamar tidurnya pada malam kejadian, yang dapat dibuktikan oleh keluarganya.";
+        }
+
+        System.out.println("Alibi " + tersangkaTerpilih + ": " + alibi);
+    }
+    private boolean gameOver(){
+        if(skor <= skor_awal){
+            System.err.println("\nGAME OVER!!!");
+            System.out.println("Kamu kalah! Kasus tidak terpecahkan");
+            return true;
+        }
+        return false;
     }
 }

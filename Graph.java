@@ -69,7 +69,7 @@ class Graph {
         System.out.println("Daftar lokasi:");
         Node current = head;
         while (current != null) {
-            System.out.println("- " + current.name);
+            System.out.println("> " + current.name);
             current = current.next;
         }
     }
