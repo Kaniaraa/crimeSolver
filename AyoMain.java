@@ -225,7 +225,7 @@ class AyoMain {
             System.out.println("Kamu menyerah pada penyilidikan ini");
             skor -= penalti;
         }
-        System.out.println("Kasus sudah berakhir, skor akhirmu: " + skor);
+        System.out.println("Skor mu menjadi: " + skor);
         return;
     }
     private void pilihTersangka(Scanner scanner){
